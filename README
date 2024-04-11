@@ -11,19 +11,20 @@
 # 2. Setting up a Virtual Environment
 1.  Navigate into the project directory:
     
-	    cd <project_directory>
+	    cd hospital_management
+
+
+2. create a virtualenv
+    python -m venv env
     
-2.  Install virtualenv if you haven't already:
-	    
-		pip install virtualenv
     
-3.  Create a virtual environment:
+3.  Activate the virtual environment:
     
-	    virtualenv venv
-    
-4.  Activate the virtual environment:
-    
-    `	venv\Scripts\activate`
+    .\env\Scripts\activate
+
+
+5. Install packges
+   pip install -r requirements.txt
 
 # 3. Migrating the Database
 
@@ -40,4 +41,19 @@
  After migrating the database, start the development server by running:
     
     
-    `python manage.py runserver`
+    python manage.py runserver
+
+
+4. Check 
+    server url 127.0.0.1:8000
+
+
+# Creating a Superuser
+
+1. Make sure your virtual environment is activated and you are in the project directory.
+
+2. Run the following command:
+
+   ```bash
+   python manage.py createsuperuser
+
