@@ -25,7 +25,6 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
         }
         await self.send(text_data=json.dumps(data))
 
-    #working
     async def typeto_admin(self,event):
         # run:anynomous status:replyback to anynomous only
         await self.send(text_data=json.dumps({

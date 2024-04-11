@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 # import  views
 from . import views as root_view
+from django.contrib.auth import views as auth_views
 
 # home view / landig page
 urlpatterns =  [
@@ -17,6 +18,11 @@ urlpatterns =  [
 urlpatterns+=[
     path("logout/",root_view.logout_,name="logout"),
     path("register/",root_view.register,name="register"),
+    path("forget/",root_view.CustomPasswordResetView.as_view(),name="forget"),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name="rest_password_done.html"), name='password_reset_done'),
+    path('password_reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_confirm.html"), name='password_reset_confirm'),
+    path('password_reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_complete.html"), name='password_reset_complete'),
+
 ]
 
 
@@ -36,4 +42,4 @@ urlpatterns+=[
 
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
+urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,7 +13,7 @@ class PatientUserForm(forms.ModelForm):
 class PatientForm(forms.ModelForm):
     class Meta:
         model=models.Patient
-        fields=['address','mobile','profile_pic',]
+        fields=['address','mobile','profile_pic','gender']
 
 
 class PatientLoginForm(forms.Form):

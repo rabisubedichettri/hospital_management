@@ -11,6 +11,11 @@ from appointment.models import Appointment,Prescribe
 import json
 from appointment.forms import PrescribeForm
 from hospital_management.views import role_required
+from admins.forms import CustomPasswordChangeForm
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from notification.models import Notification
 # Create your views here.
 def landing_page(request):
     if request.user.is_authenticated:
@@ -66,7 +71,38 @@ def register(request): #done
 
 @role_required(allowed_roles=['doctor'])
 def dashboard(request):
-    mydict={}
+    # Get the current date and time (timezone-aware)
+    current_datetime = timezone.now()
+
+    # Filter appointments for the current doctor user, unfinished, and with appointment date greater than or equal to today's date
+    appointments = Appointment.objects.filter(
+        available_shift__doctor_availability_day__doctor__user=request.user,
+        finished=False,
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+    )
+
+    patient_info = []
+
+    for appointment in appointments:
+        # Extract patient information from the appointment
+        patient = {
+            'appointment_id':appointment.id,
+            'patient_name': appointment.patient.user.get_full_name(),
+            'appointment_date': appointment.available_shift.doctor_availability_day.available_day,
+            'start_time': appointment.available_shift.start_time,
+            'end_time': appointment.available_shift.end_time,
+            'title': appointment.title,
+            'symptoms': appointment.symptoms,
+        }
+
+        patient_info.append(patient)
+
+    mydict={
+        'ongoing_appointment':"df",
+        "taken_appointment":total_appointment_taken(request),
+        "upcoming_appointment":len(patient_info),
+        }
+    
     return render(request,'doctor/dashboard.html',context=mydict)
 
 @role_required(allowed_roles=['doctor'])
@@ -161,7 +197,6 @@ def live_monitor(request):
                  'remaining_time': remaining_time.total_seconds()/60 ,
             }
 
-            print(patient)
         
 
     # data = json.dumps(running_appointments, default=str)
@@ -208,4 +243,48 @@ def appointment_view(request,id):
 
 role_required(allowed_roles=['doctor'])
 def notification(request):
-    return render(request,"doctor/notification.html")
+    notifications=Notification.objects.filter(recipient=request.user)
+    return render(request,"doctor/notification.html",{"notifications":notifications})
+
+role_required(allowed_roles=['doctor'])
+def profile(request):
+    doctor=Doctor.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request,"Password Changed successfully")
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    
+    return render(request,"doctor/profile.html",{"doctor":doctor,"form":form})
+
+
+
+def total_appointment_taken(request):
+    # Get the current date and time (timezone-aware)
+    current_datetime = timezone.now()
+
+    # Filter appointments for the current doctor user, unfinished, and with appointment date greater than or equal to today's date
+    appointments = Appointment.objects.filter(
+        available_shift__doctor_availability_day__doctor__user=request.user,
+        finished=True,
+    )
+
+    patient_info = []
+
+    for appointment in appointments:
+        # Extract patient information from the appointment
+        patient = {
+            'appointment_id':appointment.id,
+            'patient_name': appointment.patient.user.get_full_name(),
+            'appointment_date': appointment.available_shift.doctor_availability_day.available_day,
+            'start_time': appointment.available_shift.start_time,
+            'end_time': appointment.available_shift.end_time,
+            'title': appointment.title,
+            'symptoms': appointment.symptoms,
+        }
+
+        patient_info.append(patient)
+    return len(patient_info)

@@ -8,6 +8,7 @@ app_name = "doctor"
 
 urlpatterns = [
     path("",views.landing_page,name="landing_page"),
+    path("profile/",views.profile,name='profile'),
     path("login/",views.login_,name="login"),
     path("register/",views.register,name="register"),
     path("dashboard/",views.dashboard,name="dashboard"),

@@ -7,6 +7,7 @@ from doctor.models import Doctor, DEPARTMENTS
 from appointment.models import DoctorAvailabilityDay,DoctorAvailabilityShift
 from patient.models import Patient
 from datetime import datetime, timedelta
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class AdminCheckForm(forms.Form):
@@ -67,3 +68,19 @@ class CustomTimeField(forms.TimeField):
 class CustomFormTime(forms.Form):
     start_time = CustomTimeField(label='Custom Time')
     end_time = CustomTimeField(label='Custom Time')
+
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label="Old Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    new_password1 = forms.CharField(
+        label="New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    new_password2 = forms.CharField(
+        label="Confirm New Password",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )

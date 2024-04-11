@@ -13,7 +13,8 @@ class DoctorUserForm(forms.ModelForm):
 class DoctorForm(forms.ModelForm):
     class Meta:
         model=models.Doctor
-        fields=['address','mobile','department','status','profile_pic','email']
+        fields=['address','mobile','department','status','profile_pic','email',
+        'license_id','gender','education']
 
 
 

@@ -11,6 +11,11 @@ import json
 from django.utils import timezone
 from appointment.models import Appointment
 from hospital_management.views import role_required
+from notification.models import Notification
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import CustomPasswordChangeForm
 
 def current_user(request):
     if request.user.is_authenticated:
@@ -56,41 +61,56 @@ def login_(request):
 
 @role_required(allowed_roles=['admin'])
 def dashboard(request):
-    # #for both table in admin dashboard
-    doctors=Doctor.objects.all().order_by('-id')
-    patients=Patient.objects.all().order_by('-id')
-    # #for three cards
-    doctorcount=doctors.filter(status=True).count()
-    pendingdoctorcount=doctors.filter(status=False).count()
-
-    patientcount=patients.filter(status=True).count()
-    pendingpatientcount=patients.filter(status=False).count()
-
-    # appointmentcount=models.Appointment.objects.all().filter(status=True).count()
-    # pendingappointmentcount=models.Appointment.objects.all().filter(status=False).count()
-
-    # mydict={
-    # 'doctors':doctors,
-    # 'patients':patients,
-    # 'doctorcount':doctorcount,
-    # 'pendingdoctorcount':pendingdoctorcount,
-    # 'patientcount':patientcount,
-    # 'pendingpatientcount':pendingpatientcount,
-    # 'appointmentcount':appointmentcount,
-    # 'pendingappointmentcount':pendingappointmentcount,
-    # }
-
-
-    mydict={
-        'doctors':doctors,
-        'patients':patients,
-        'doctorcount':doctorcount,
-        'pendingdoctorcount':pendingdoctorcount,
-        'patientcount':patientcount,
-        'pendingpatientcount':pendingpatientcount,
+    active_doctors=Doctor.objects.filter(status=True,approve=True).count()
+    active_patients=Patient.objects.filter(status=True,approve=True).count()
     
+
+    doctors_with_availability = Doctor.objects.filter(doctoravailabilityday__isnull=False).distinct()
+    doctor_availability = {}
+    total_appointment_day = 0  # Initialize count for total appointment days
+    for doctor in doctors_with_availability:
+        availability_days = list(DoctorAvailabilityDay.objects.filter(doctor=doctor).values_list('available_day', flat=True))
+        doctor_availability[doctor.user.first_name + " " + doctor.user.last_name] = availability_days
+        total_appointment_day += len(availability_days)  # Increment total appointment days
+    
+    total_users_count = User.objects.count()
+
+    current_datetime = timezone.localtime()
+
+    # Filter appointments for the current doctor user, unfinished, and with appointment date greater than or equal to today's date
+    appointments = Appointment.objects.filter(
+        finished=False,
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+    )
+
+    running_appointments = []
+
+    for appointment in appointments:
+    # Check if the appointment is currently running
+        start_datetime = timezone.make_aware(timezone.datetime.combine(appointment.available_shift.doctor_availability_day.available_day, appointment.available_shift.start_time))
+        end_datetime = timezone.make_aware(timezone.datetime.combine(appointment.available_shift.doctor_availability_day.available_day, appointment.available_shift.end_time))
+        if start_datetime <= current_datetime<=end_datetime:
+            remaining_time = end_datetime - current_datetime
+        
+            # Extract patient information from the appointment
+            info = {
+                'appointment_id': appointment.id,
+                'patient_name': appointment.patient.user.get_full_name(),
+                'appointment_date': appointment.available_shift.doctor_availability_day.available_day,
+                'start_time': appointment.available_shift.start_time,
+                'end_time': appointment.available_shift.end_time,
+                'doctor_name':appointment.available_shift.doctor_availability_day.doctor.user.get_full_name(),
+            }
+            running_appointments.append(info)
+
+    data={
+        "active_doctors":active_doctors,
+        "active_patients":active_patients,
+        "total_appointment_day":total_appointment_day,
+        "total_users_count":total_users_count,
+        'ongoing_appointment':len(running_appointments),
     }
-    return render(request,'admin/dashboard.html',context=mydict)
+    return render(request,'admin/dashboard.html',context=data)
 
 
 # admin-doctor related views
@@ -449,9 +469,6 @@ def appointment_onging(request):
     # Check if the appointment is currently running
         start_datetime = timezone.make_aware(timezone.datetime.combine(appointment.available_shift.doctor_availability_day.available_day, appointment.available_shift.start_time))
         end_datetime = timezone.make_aware(timezone.datetime.combine(appointment.available_shift.doctor_availability_day.available_day, appointment.available_shift.end_time))
-        print(start_datetime)
-        print(current_datetime)
-        print(end_datetime)
         if start_datetime <= current_datetime<=end_datetime:
             remaining_time = end_datetime - current_datetime
         
@@ -473,8 +490,27 @@ def appointment_onging(request):
 
 @role_required(allowed_roles=['admin'])
 def notification(request):
-    return render(request,"admin/notification.html")
+    notification=Notification(
+        recipient=request.user,
+        message="this message is addef",
+        notification_type="user"
+    )
+    notification.save()
+    notifications=Notification.objects.filter(recipient=request.user)
+    return render(request,"admin/notification.html",{"notifications":notifications})
     
 @role_required(allowed_roles=['admin'])
 def chat(request):
     return render(request,"admin/chat.html")
+
+@role_required(allowed_roles=['admin'])
+def profile(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('password_change_done')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request,"admin/profile.html",{"user":request.user,'form': form})

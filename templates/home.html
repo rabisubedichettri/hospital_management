@@ -108,16 +108,23 @@
 
           <div id="message_log" class="card-body chat-messages">
             <!-- Chat messages will be displayed here -->
+           {%for chat in chat_data%}
+           {% if chat.sender_type == "ADMIN" %}
             <div class="message received">
               <img src="https://via.placeholder.com/40" class="avatar" alt="User 1">
-              <div class="text">Hello!</div>
+              <div class="text">{{chat.message}}</div>
             </div>
+            {%endif%}
+            
+            {% if chat.sender_type == "ANONYMOUS" %}
             <div class="message sent">
-              <div class="text">Hi
-                hjgjybujvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvthere!
-              </div>
+              <div class="text">{{chat.message}}</div>
+             
+
               <img src="https://via.placeholder.com/40" class="avatar" alt="User 2">
             </div>
+            {%endif%}
+            {%endfor%}
             <!-- Additional messages go here -->
           </div>
 

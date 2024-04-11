@@ -48,6 +48,9 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
             message = text_data_json.get("message", None)
             receiver=text_data_json.get("sender", None)
             if message and receiver:
+
+
+                await self.create_message(message,receiver)
                 #calling code: 1111
                 await self.channel_layer.group_send(
                     'admin',
@@ -66,7 +69,8 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
             # called code: 2222
             receiver=text_data_json.get("sender", None)
             if receiver:
-                print(receiver)
+    
+
                 await self.channel_layer.group_send('admin',
                 {"type": "typeto.admin",
                 "receiver":receiver,
@@ -90,7 +94,29 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
             "action": "typed.message",
             }))
     
+    async def create_message(self, message,receiver):
+        room, found = await self.get_room(receiver)
+        if not found:
+            return
+        await database_sync_to_async(AnonymousRoomMessage.objects.create)(
+            room=room,
+            message=message,
+            sender_type='ANONYMOUS',  
+            sent_time=timezone.now(),
+            read=False
+        )
 
+
+    async def get_room(self, receiver):
+        try:
+            room = await database_sync_to_async(AnonymousRoom.objects.get)(room_name=receiver)
+            found = True
+        except AnonymousRoom.DoesNotExist:
+            room = None
+            found = False  # Set created to False since the room wasn't created
+        return room, found
+
+    
 
 class AdminConsumer(AsyncWebsocketConsumer):
 
@@ -112,9 +138,6 @@ class AdminConsumer(AsyncWebsocketConsumer):
             "action": "typed.message",
             "receiver":event['receiver'],
             }))
-
-    
-
   
     async def connect(self):
         self.room_group_name = self.scope["url_route"]["kwargs"]["room_name"]
@@ -137,8 +160,7 @@ class AdminConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
- 
-    
+   
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         print("admin",text_data_json)
@@ -154,6 +176,7 @@ class AdminConsumer(AsyncWebsocketConsumer):
             receiver = text_data_json.get("receiver", None)
             receiver="fc1a9fde-54a3-4c61-9c5b-aa18f31199d1"
             if message and receiver:
+                await self.create_message(message,receiver)
                 await self.channel_layer.group_send(
                     receiver,
                     {
@@ -175,9 +198,27 @@ class AdminConsumer(AsyncWebsocketConsumer):
                     receiver,
                     {
                         "type": "typeto.anynomous",
-                        "message": "message",
-                        "receiver":"fc1a9fde-54a3-4c61-9c5b-aa18f31199d1",
+                        "receiver":receiver,
                     }
                     )
 
-   
+    async def create_message(self, message,receiver):
+        room, found = await self.get_room(receiver)
+        if not found:
+            return
+        await database_sync_to_async(AnonymousRoomMessage.objects.create)(
+            room=room,
+            message=message,
+            sender_type='ADMIN',  
+            sent_time=timezone.now(),
+            read=False
+        )
+
+    async def get_room(self, receiver):
+        try:
+            room = await database_sync_to_async(AnonymousRoom.objects.get)(room_name=receiver)
+            found = True
+        except AnonymousRoom.DoesNotExist:
+            room = None
+            found = False  # Set created to False since the room wasn't created
+        return room, found

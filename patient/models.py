@@ -3,14 +3,18 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-
+GENDER = [
+    ('Male','Male'),
+    ('Female','Female'),
+    ]
 class Patient(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/PatientProfilePic/',null=True,blank=True)
+    profile_pic= models.ImageField(upload_to='media/profile_pic/PatientProfilePic/',null=True,blank=True)
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=False)
     status=models.BooleanField(default=False)
     approve=models.BooleanField(default=False)
+    gender=models.CharField(max_length=50,choices=GENDER,default='Male')
 
     # symptoms = models.CharField(max_length=100,null=False)
     # assignedDoctorId = models.PositiveIntegerField(null=True)

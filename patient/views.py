@@ -16,6 +16,13 @@ import json
 from django.utils import timezone
 from datetime import datetime
 from hospital_management.views import role_required
+from notification.models import Notification
+
+from admins.forms import CustomPasswordChangeForm
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 # Create your views here.
 @role_required(allowed_roles=['patient'])
 def landing_page(request):
@@ -73,7 +80,11 @@ def login_(request):
 
 @role_required(allowed_roles=['patient'])
 def dashboard(request):
-    return render(request,"patient/dashboard.html")
+    data={
+        "total_appoinment_taken":get_total_appointment_taken(request),
+        'total_upcoming_appointment':get_total_appoinment_upcoming(request),
+    }
+    return render(request,"patient/dashboard.html",data)
 
 
 @role_required(allowed_roles=['patient'])
@@ -235,4 +246,118 @@ def appointment_view(request,id):
 
 @role_required(allowed_roles=['patient'])
 def notification(request):
-    return render(request,"patient/notification.html")
+    notifications=Notification.objects.filter(recipient=request.user)
+    return render(request,"patient/notification.html",{"notifications":notifications})
+
+@role_required(allowed_roles=['patient'])
+def profile(request):
+    patient=Patient.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request,"Password Changed successfully")
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    
+    return render(request,"patient/profile.html",{"patient":patient,"form":form})
+
+
+def get_total_appointment_taken(request):
+    # Get the current date and time (timezone-aware)
+    current_datetime = timezone.now()
+
+    # Filter appointments for the current user, unfinished, and with appointment date greater than or equal to today's date
+    appointments = Appointment.objects.filter(
+        patient=Patient.objects.get(user=request.user),
+        finished=False,
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+    )
+
+    doctor_availability = {}
+    doctor_availability_info = []
+    total_appointment = 0  # Initialize count for total appointment days
+
+    for appointment in appointments:
+        # Get the availability day and start time for the appointment
+        availability_day = appointment.available_shift.doctor_availability_day.available_day
+        start_time = appointment.available_shift.start_time
+
+        # If the availability day is today's date, check the appointment time
+        if availability_day == current_datetime.date():
+            # Convert the start time to a datetime object for comparison
+            appointment_datetime = datetime.combine(availability_day, start_time)
+
+            # Check if the appointment time is greater than the current time
+            print(appointment_datetime)
+            print(current_datetime)
+            if timezone.make_aware(appointment_datetime, timezone.get_current_timezone()) > current_datetime:
+                # Add availability day to the dictionary
+                doctor_name = f"{appointment.available_shift.doctor_availability_day.doctor.user.first_name} {appointment.available_shift.doctor_availability_day.doctor.user.last_name}"
+                if doctor_name not in doctor_availability:
+                    doctor_availability[doctor_name] = []
+
+                doctor_availability[doctor_name].append(availability_day)
+                doctor_availability_info.append(appointment)
+                total_appointment += 1  # Increment total appointment days
+        else:
+            # Add availability day to the dictionary
+            doctor_name = f"{appointment.available_shift.doctor_availability_day.doctor.user.first_name} {appointment.available_shift.doctor_availability_day.doctor.user.last_name}"
+            if doctor_name not in doctor_availability:
+                doctor_availability[doctor_name] = []
+
+            doctor_availability[doctor_name].append(availability_day)
+            doctor_availability_info.append(appointment)
+            total_appointment += 1  # Increment total appointment days
+    return total_appointment
+    
+def get_total_appoinment_upcoming(request):
+    # Get the current date and time (timezone-aware)
+    current_datetime = timezone.now()
+
+    # Filter appointments for the current user, unfinished, and with appointment date greater than or equal to today's date
+    appointments = Appointment.objects.filter(
+        patient=Patient.objects.get(user=request.user),
+        finished=False,
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+    )
+
+    doctor_availability = {}
+    doctor_availability_info = []
+    total_appointment = 0  # Initialize count for total appointment days
+
+    for appointment in appointments:
+        # Get the availability day and start time for the appointment
+        availability_day = appointment.available_shift.doctor_availability_day.available_day
+        start_time = appointment.available_shift.start_time
+
+        # If the availability day is today's date, check the appointment time
+        if availability_day == current_datetime.date():
+            # Convert the start time to a datetime object for comparison
+            appointment_datetime = datetime.combine(availability_day, start_time)
+
+            # Check if the appointment time is greater than the current time
+            print(appointment_datetime)
+            print(current_datetime)
+            if timezone.make_aware(appointment_datetime, timezone.get_current_timezone()) > current_datetime:
+                # Add availability day to the dictionary
+                doctor_name = f"{appointment.available_shift.doctor_availability_day.doctor.user.first_name} {appointment.available_shift.doctor_availability_day.doctor.user.last_name}"
+                if doctor_name not in doctor_availability:
+                    doctor_availability[doctor_name] = []
+
+                doctor_availability[doctor_name].append(availability_day)
+                doctor_availability_info.append(appointment)
+                total_appointment += 1  # Increment total appointment days
+        else:
+            # Add availability day to the dictionary
+            doctor_name = f"{appointment.available_shift.doctor_availability_day.doctor.user.first_name} {appointment.available_shift.doctor_availability_day.doctor.user.last_name}"
+            if doctor_name not in doctor_availability:
+                doctor_availability[doctor_name] = []
+
+            doctor_availability[doctor_name].append(availability_day)
+            doctor_availability_info.append(appointment)
+            total_appointment += 1  # Increment total appointment days
+            
+    info = doctor_availability
+    return len(info)

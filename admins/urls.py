@@ -11,6 +11,7 @@ urlpatterns = [
     path("",views.dashboard,name="landing_page"),
     path("notification/",views.notification,name="notification"),
     path("chat/",views.chat,name="chat"),
+    path("profile/",views.profile,name="profile"),
 
     #login
     path('login/', views.login_,name="login"),

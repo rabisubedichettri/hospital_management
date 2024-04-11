@@ -12,9 +12,14 @@ DEPARTMENTS = [
     ('Colon and Rectal Surgeons','Colon and Rectal Surgeons')
     ]
 
+GENDER = [
+    ('Male','Male'),
+    ('Female','Female'),
+    ]
+
 class Doctor(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    profile_pic= models.ImageField(upload_to='profile_pic/DoctorProfilePic/')
+    profile_pic= models.ImageField(upload_to='media/profile_pic/DoctorProfilePic/')
     address = models.CharField(max_length=40)
     mobile = models.CharField(max_length=20,null=True)
     department= models.CharField(max_length=50,choices=DEPARTMENTS,default='Cardiologist')
@@ -24,6 +29,8 @@ class Doctor(models.Model):
     email=models.EmailField(max_length=250)
     experience=models.CharField(max_length=34)
     details=models.TextField(max_length=2000)
+    license_id=models.CharField(max_length=34)
+    gender=models.CharField(max_length=50,choices=GENDER,default='Male')
     
     @property
     def get_name(self):

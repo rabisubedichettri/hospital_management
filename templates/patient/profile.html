@@ -1,0 +1,86 @@
+{%extends 'patient/base.html' %}
+
+{%block content%}
+<section class="content">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-3">
+    
+    <div class="card card-primary card-outline">
+    <div class="card-body box-profile">
+    <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle" src="/media/{{patient.profile_pic}}" alt="User profile picture">
+    </div>
+    <h3 class="profile-username text-center">{{patient.user.first_name}} {{patient.user.last_name}}</h3>
+    <p class="text-muted text-center">{{patient.department}}</p>
+    <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item">
+    <b>Username</b> <a class="float-right">{{patient.user.username}}</a>
+    </li>
+    <li class="list-group-item">
+        <b>Email</b> <a class="float-right">{{patient.user.email}}</a>
+        </li>
+    <li class="list-group-item">
+    <b>Phone no</b> <a class="float-right">{{patient.mobile}}</a>
+    </li>
+    <li class="list-group-item">
+    <b>Gender</b> <a class="float-right">{{patient.gender}}</a>
+    </li>
+    </ul>
+    </div>
+    
+    </div>
+    
+    
+    <div class="card card-primary">
+    <div class="card-header">
+    <h3 class="card-title">Location</h3>
+    </div>
+    
+    <div class="card-body">
+   
+   <i class="fas fa-map-marker-alt mr-1"></i>
+    <p class="text-muted">{{patient.address}}</p>
+    <hr>
+   
+    </div>
+    
+    </div>
+    
+    </div>
+    
+    <div class="col-md-9">
+    <div class="card">
+    <div class="card-header p-2">
+    <ul class="nav nav-pills">
+    </ul>
+    </div>
+    <div class="card-body">
+        <div class="col-md-6 card m-2">
+              <h1> Change Your Password</h1>
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary">Change Password</button>
+            </form>
+          </div>
+
+    
+    </div>
+    </div>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+    </section>
+{%endblock%}

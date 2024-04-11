@@ -1,0 +1,60 @@
+{%extends 'admin/base.html'%}
+{%block content%}
+<section class="content">
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-3"></div>
+    <div class="col-6">
+    
+    <div class="card card-primary card-outline">
+    <div class="card-body box-profile">
+    <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e" alt="User profile picture">
+    </div>
+    <h3 class="profile-username text-center">{{user.first_name}} {{user.last_name}}</h3>
+    <p class="text-muted text-center">SuperUser | Admin </p>
+    <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item">
+    <b>UserName</b> <a class="float-right">{{user.username}}</a>
+    </li>
+    <li class="list-group-item">
+    <b>Email</b> <a class="float-right">{{user.email}}</a>
+    </li>
+    
+    </ul>
+    </div>
+    
+    </div>
+    
+    
+
+    </div>
+    <div class="col-3"></div>
+   
+    
+    </div>
+    
+    </div>
+    </section>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+          <div class="col-md-6 card m-2">
+            <h2>Change Password</h2>
+            <form method="post">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group">
+                  <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                  {{ field }}
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">{{ error }}</div>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary">Change Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+{%endblock%}
