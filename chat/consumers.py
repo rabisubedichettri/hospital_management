@@ -8,19 +8,6 @@ from channels.db import database_sync_to_async
 
 class AnonymousConsumer(AsyncWebsocketConsumer):
 
-
-    async def typeto_admin(self,event):
-        await self.send(text_data=json.dumps({
-            "action": "typing.message",
-            "sender":self.room_group_name,
-            }))
-
-    async def sendto_admin(self, event):
-        await self.send(text_data=json.dumps({
-            "action": "typing.message",
-            "sender":self.room_group_name,
-            }))
-
     async def check_anonymous_room(self):
         return await database_sync_to_async(
             AnonymousRoom.objects.filter(room_name=self.room_group_name).exists
@@ -49,7 +36,7 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print("admin",text_data_json)
+        print("anynomous",text_data_json)
 
         action = text_data_json.get("action", False)
         if action == 'send.message':
@@ -59,82 +46,76 @@ class AnonymousConsumer(AsyncWebsocketConsumer):
                  
             # }
             message = text_data_json.get("message", None)
-            if message:
-                await self.create_message(message)
+            receiver=text_data_json.get("sender", None)
+            if message and receiver:
+                #calling code: 1111
+                await self.channel_layer.group_send(
+                    'admin',
+                    {
+                        "type": "sendto.admin",
+                        "message": message,
+                        "receiver":receiver,
+                    }
+                    )
+               
 
-        elif action == "type.message":
+        if action == "type.message":
             # format={
             #     'action':'type.message',
             # }
-            await self.send_typing_status(self.room_group_name)
+            # called code: 2222
+            receiver=text_data_json.get("sender", None)
+            if receiver:
+                print(receiver)
+                await self.channel_layer.group_send('admin',
+                {"type": "typeto.admin",
+                "receiver":receiver,
+                })
 
-    async def create_message(self, message):
-        room, found = await self.get_room(self.room_group_name)
-        if not found:
-            return
-        await database_sync_to_async(AnonymousRoomMessage.objects.create)(
-            room=room,
-            message=message,
-            sender_type='ANONYMOUS',  
-            sent_time=timezone.now(),
-            read=False
-        )
+    # called code: 3333
+    # this method is called when anynomous user send a message
+    # got by admin
+    async def sendto_anynomous(self, event):
+        await self.send(text_data=json.dumps({
+            "action": "got.message",
+            "receiver":event['receiver'],
+            "message":event["message"],
+            }))
 
-        await self.channel_layer.group_send(
-            'admin',
-            {
-                "type": "sendto.admin",
-                "message": message,
-                'sender':self.room_group_name,
-            }
-        )
-
-    async def send_typing_status(self,receiver):
-        await self.channel_layer.group_send(
-            receiver,
-            {
-                "type": "typeto.admin",
-            }
-        )
-
-    async def get_room(self, receiver):
-        try:
-            room = await database_sync_to_async(AnonymousRoom.objects.get)(room_name=receiver)
-            found = True
-        except AnonymousRoom.DoesNotExist:
-            room = None
-            found = False  # Set created to False since the room wasn't created
-        return room, found
-
-
-        async def sendto_anynomous(self, event):
-            # this handler is used to send message to admin called by reply_me
-            data={
-            "action":"got.message",
-            'message':event["message"],
-            "sender":event['sender'],
-            }
-            await self.send(text_data=json.dumps(data))
-
+    # called code: 4444
+    # this method is called when anynomous user type a message
+    # got by admin
+    async def typeto_anynomous(self,event):
+        await self.send(text_data=json.dumps({
+            "action": "typed.message",
+            }))
+    
 
 
 class AdminConsumer(AsyncWebsocketConsumer):
-    
-    async def sendto_anynomous(self, event):
-        # this handler is used to send message to admin called by reply_me
-        data={
-        "action":"got.message",
-        'message':event["message"],
-        "sender":event['sender'],
-        }
-        await self.send(text_data=json.dumps(data))
 
-    async def typeto_anynomous(self,event):
+    # called code: 1111
+    # this method is called when anynomous user send a message
+    # got by admin
+    async def sendto_admin(self, event):
         await self.send(text_data=json.dumps({
-            "action": "typing.message",
-            "sender":self.room_group_name,
+            "action": "got.message",
+            "message":event['message'],
+            "receiver":event['receiver']
             }))
- 
+
+    # called code: 222
+    # this method is called when anynomous user type a message
+    # got by admin
+    async def typeto_admin(self,event):
+        await self.send(text_data=json.dumps({
+            "action": "typed.message",
+            "receiver":event['receiver'],
+            }))
+
+    
+
+  
     async def connect(self):
         self.room_group_name = self.scope["url_route"]["kwargs"]["room_name"]
         if not self.room_group_name == "admin":
@@ -171,8 +152,16 @@ class AdminConsumer(AsyncWebsocketConsumer):
             # }
             message = text_data_json.get("message", None)
             receiver = text_data_json.get("receiver", None)
+            receiver="fc1a9fde-54a3-4c61-9c5b-aa18f31199d1"
             if message and receiver:
-                await self.create_message(message, receiver)
+                await self.channel_layer.group_send(
+                    receiver,
+                    {
+                        "type": "sendto.anynomous",
+                        "message": message,
+                        "receiver":receiver,
+                    }
+                    )
 
         elif action == "type.message":
             # format={
@@ -180,61 +169,15 @@ class AdminConsumer(AsyncWebsocketConsumer):
             #     'receiver':receiver
             # }
             receiver = text_data_json.get("receiver", None)
-            if sender:
-                await self.send_typing_status(receiver)
+            receiver="fc1a9fde-54a3-4c61-9c5b-aa18f31199d1"
+            if receiver:
+                await self.channel_layer.group_send(
+                    receiver,
+                    {
+                        "type": "typeto.anynomous",
+                        "message": "message",
+                        "receiver":"fc1a9fde-54a3-4c61-9c5b-aa18f31199d1",
+                    }
+                    )
 
-    async def create_message(self, message,receiver):
-        room, found = await self.get_room(receiver)
-        if not found:
-            return
-        await database_sync_to_async(AnonymousRoomMessage.objects.create)(
-            room=room,
-            message=message,
-            sender_type='ADMIN',  
-            sent_time=timezone.now(),
-            read=False
-        )
-
-        # it sends mesage to all admin who is listening to it
-        # await self.channel_layer.group_send(
-        #     self.room_group_name,
-        #     {
-        #         "type": "send.message",
-        #         "message": message,
-        #         "receiver":receiver,
-        #     }
-        # )
- 
-
-    async def send_message(self, event):
-        #  got by admin
-        data={
-        "action":"got.messagce",
-        'message':event["message"],
-        "client":"yes"  
-        }
-        await self.send(text_data=json.dumps(data))
-        # this make sure all bordcast to own e
-
-    # bordacast to all admin
-    async def send_typing_status(self,receiver):
-        await self.channel_layer.group_send(
-            receiver,
-            {
-                "type": "sendto.anynomous",
-            }
-        )
-
-    async def type_message(self, event):
-        await self.send(text_data=json.dumps({
-            "action": "typeto.anynomous"
-            }))
-
-    async def get_room(self, receiver):
-            try:
-                room = await database_sync_to_async(AnonymousRoom.objects.get)(room_name=receiver)
-                found = True
-            except AnonymousRoom.DoesNotExist:
-                room = None
-                found = False  # Set created to False since the room wasn't created
-            return room, found
+   

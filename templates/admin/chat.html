@@ -87,7 +87,7 @@
             </div>
             <div class="user_info">
               <span>Chat with Khalid</span>
-              <p>1767 Messages</p>
+              <div id="typing" class="text-dark">online</div>
             </div>
             <div class="video_cam">
               <span><i class="fas fa-video"></i></span>
@@ -134,7 +134,7 @@
               <span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
             </div>
             <!--  -->
-            <textarea id="chat-message-input" class="form-control type_msg" placeholder="Type your message..."></textarea>
+            <textarea id="chat-message-input" oninput="ontyping();" class="form-control type_msg" placeholder="Type your message..."></textarea>
             <!--  -->
             <div class="input-group-append">
               <button class="input-group-text send_btn bg-info" onclick="passAndClear()">
@@ -175,43 +175,38 @@ const chatSocket = new WebSocket(
 console.log(chatSocket)
 
 chatSocket.onmessage = function(e) {
-const data = JSON.parse(e.data);
-console.log("receive:",data)
-var message=data.message;
-    // Select all elements with the class 'msg_cotainer_send'
-    var messageElements = document.querySelectorAll('.sent_message');
-    // console.log(messageElements.length)
-    // Check if any elements were found
-    if (messageElements.length > 0) {
-      // Get the last element from the NodeList
-      var lastMessageElement = messageElements[messageElements.length - 1];
+    const data = JSON.parse(e.data);
+    console.log("receive:",data)
+    var message=data.message;
 
-      // Get the text content of the last message
-      var lastMessageText = lastMessageElement.textContent.trim();
-            // console.log(lastMessageElement.textContent.trim())
-            if (lastMessageText != message) {
-var newMessage = document.createElement('div');
-    newMessage.classList.add('d-flex', 'justify-content-start','mb-4');
+    // case 1: message send by anynomous and got by admin
+    if (data.action=="got.message"){
+      var newMessage = document.createElement('div');
+      newMessage.classList.add('d-flex', 'justify-content-start','mb-4');
       var htmlMessage = `
-      <div class="img_cont_msg">
-              <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
-            </div>
-      <div class="msg_cotainer">
-                ${message}
-              <span class="msg_time">8:40 AM, Today</span>
-            </div>
-           `;
-          
-                        
-    newMessage.innerHTML = htmlMessage;
-    var messageLog = document.getElementById('message_log');
+          <div class="img_cont_msg">
+                  <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
+                </div>
+          <div class="msg_cotainer">
+                    ${message}
+                  <span class="msg_time">8:40 AM, Today</span>
+                </div>
+              `;
 
-// Append the new message to the message log
-messageLog.appendChild(newMessage);
+      newMessage.innerHTML = htmlMessage;
+      var messageLog = document.getElementById('message_log');
+      messageLog.appendChild(newMessage);
+      messageLog.scrollTop = messageLog.scrollHeight;
+  }
+
+  if (data.action=="typed.message"){
+    var typing_element = document.getElementById('typing');
+      typing_element.innerHTML="typing..."
+      // typing_element.innerHTML="online"
+
+  }  
   
-messageLog.scrollTop = messageLog.scrollHeight;
-          }
-}};
+};
 
 
 chatSocket.onclose = function(e) {
@@ -231,12 +226,15 @@ function passAndClear() {
         return; 
     }
 
+    // get receiver
+    receiver="fc1a9fde-54a3-4c61-9c5b-aa18f31199d1"
+
     // send the message
     chatSocket.send(JSON.stringify(
           {
                 'action':'send.message',
                 'message':message.trim(),
-                'receiver':'7c181e3e-3481-4e73-b268-84938ceaa942',            }
+                'receiver':receiver,            }
     ));
 
 
@@ -264,6 +262,21 @@ function passAndClear() {
     messageLog.scrollTop = messageLog.scrollHeight;
 
 }
+
+function ontyping() {
+  let message = document.getElementById("chat-message-input").value;
+  //  get receiver
+  var receiver="fc1a9fde-54a3-4c61-9c5b-aa18f31199d1"
+  
+  if (message.trim() === "") {
+      return; // Exit the function if the message is empty
+    }
+
+    chatSocket.send(JSON.stringify({
+                "action":"type.message",
+                'receiver':receiver}  
+          ));
+    }
   
 
 </script>

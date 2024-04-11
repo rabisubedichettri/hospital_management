@@ -36,13 +36,7 @@
         <!-- Add your carousel code here -->
         <h3 class="text-center">Gallery</h3>
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
-          </ol>
+          
           <div class="carousel-inner">
             <div class="carousel-item active">
               <img class="d-block w-150" src="https://cdn.pixabay.com/photo/2016/06/24/02/35/ehr-1476525_1280.png"
@@ -102,8 +96,8 @@
 
 </div>
 </div>
-<div>
-  <input type="checkbox" id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i
+<div class="mb-0">
+  <input type="checkbox"  id="check"> <label class="chat-btn" for="check"> <i class="fa fa-commenting-o comment"></i> <i
       class="fa fa-close close"></i> </label>
   <div class="wrapper">
 
@@ -129,9 +123,10 @@
 
           <div class="card-footer">
             <div class="input-group">
-              <input type="text" class="form-control" oninput="ontyping()" id="chat-message-input" placeholder="Type your message...">
               <div class="input-group-append">
-                <button id="chat-message-submit" onclick="passAndClear();" class="btn btn-primary"
+              <input type="text" class="form-control" oninput="ontyping()" id="chat-message-input" placeholder="Type your message...">
+
+                <button id="chat-message-submit" onclick="passAndClear();" class="btn btn-primary mt-2"
                   type="button">Send</button>
               </div>
             </div>
@@ -313,65 +308,38 @@
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     console.log("data_get:",data)
-    // document.querySelector('#chat-log').value += (data.message + '\n');
     var message = data.message
-    // 
-    // Select all elements with the class 'msg_cotainer_send'
-    var messageElements = document.querySelectorAll('.sent');
 
-    // Check if any elements were found
-    if (messageElements.length > 0) {
-      // Get the last element from the NodeList
-      var lastMessageElement = messageElements[messageElements.length - 1];
 
-      // Get the text content of the last message
-      var lastMessageText = lastMessageElement.textContent.trim();
-
-            if (lastMessageText == message) {
-              console.log("receive message:",message)
-              return
-            }
-            else {
-              
-
-    var newMessage = document.createElement('div');
-    newMessage.classList.add('message', 'received');
-    var htmlMessage = ` <img src="https://via.placeholder.com/40" class="avatar" alt="User 1">
+    // case 1: message sent by admin and got by anynomous
+    if (data.action=="got.message"){
+      var newMessage = document.createElement('div');
+      newMessage.classList.add('message', 'received');
+      var htmlMessage = ` <img src="https://via.placeholder.com/40" class="avatar" alt="User 1">
                  <div class="text">${message}</div>
                             `;
-    newMessage.innerHTML = htmlMessage;
-    var messageLog = document.getElementById('message_log');
-    // 
-    
-
-    // Append the new message to the message log
-    messageLog.appendChild(newMessage);
-
-    messageLog.scrollTop = messageLog.scrollHeight;
-
-            }
-        } 
-    
-    else {
-      console.log("No messages found.");
+      newMessage.innerHTML = htmlMessage;
+      var messageLog = document.getElementById('message_log');
+      // Append the new message to the message log
+      messageLog.appendChild(newMessage);
+      // show new message
+      messageLog.scrollTop = messageLog.scrollHeight;
+    }
+    // case 1: message typed by admin and got by anynomous
+    if (data.action=="typed.message"){
+      console.log("typing by admin")
     }
 
 
-
-
-
-
-
-
-
-
-  };
+    
+ };
 
   chatSocket.onclose = function (e) {
     console.error('Chat socket closed unexpectedly');
   };
 
 
+  //  data sender to admin
   function passAndClear() {
     // Get the input value
     const message = document.getElementById("chat-message-input").value;
