@@ -1,0 +1,143 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+<section class="content">
+<h1> Book an appointment for a doctor </h1>
+  <div class="card card-solid">
+  <div class="card-body pb-0">
+  <div class="row">
+    {% for doctor in doctors %}
+  <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+  <div class="card bg-light d-flex flex-fill">
+  <div class="card-header text-muted border-bottom-0">
+  {{doctor.department}}
+  </div>
+  <div class="card-body pt-0">
+  <div class="row">
+  <div class="col-7">
+  <h2 class="lead"><b>{{doctor.user.first_name}} {{doctor.user.last_name}}</b></h2>
+  <p class="text-muted text-sm"><b>Qualification: </b> {{doctor.education}} </p>
+  <ul class="ml-4 mb-0 fa-ul text-muted">
+  <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: {{doctor.address}}</li><br>
+  <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone #: {{doctor.mobile}}</li>
+  </ul>
+  </div>
+  <div class="col-5 text-center">
+  <img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f" alt="user-avatar" class="img-circle img-fluid">
+  </div>
+  </div>
+  </div>
+  <div class="card-footer">
+  <div class="text-right">
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter{{ forloop.counter }}">
+  Book a date
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Select a date</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card-body">
+          <form method="post">
+              {% csrf_token %}
+              
+             
+         
+              <!-- Date field -->
+              <div class="form-group text-left">
+                <label for="date">Date:</label>
+                <input type="date" class="form-control" id="date" name="available_day">
+                {% if form.available_day.errors %}
+                {% for error in form.available_day.errors %}
+                    <small class="form-text text-danger">{{ error }}</small>
+                {% endfor %}
+            {% endif %}
+              </div>
+            
+              <input type="hidden" name="doctor" value="{{doctor.id}}"/>
+              <input type="submit" class="btn btn-primary">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+            </form>
+          
+      </div>
+  
+      </div>
+     
+    </div>
+  </div>
+</div>
+    
+  <a href="#" class="btn btn-sm btn-danger">
+  <i class="fas fa-user"></i> available dates
+  </a>
+  <a href="/admin/dashboard/doctor/detail/{{doctor.user.id}}/" class="btn btn-sm btn-primary">
+    <i class="fas fa-user"></i>Profile
+    </a>
+  </div>
+  </div>
+  </div>
+  </div>
+ {%endfor%}
+  
+  </div>
+  </div>
+<!--   
+  <div class="card-footer">
+  <nav aria-label="Contacts Page Navigation">
+  <ul class="pagination justify-content-center m-0">
+  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+  <li class="page-item"><a class="page-link" href="#">2</a></li>
+  <li class="page-item"><a class="page-link" href="#">3</a></li>
+  <li class="page-item"><a class="page-link" href="#">4</a></li>
+  <li class="page-item"><a class="page-link" href="#">5</a></li>
+  <li class="page-item"><a class="page-link" href="#">6</a></li>
+  <li class="page-item"><a class="page-link" href="#">7</a></li>
+  <li class="page-item"><a class="page-link" href="#">8</a></li>
+  </ul>
+  </nav>
+  </div> -->
+  
+  </div>
+  
+  </section>
+
+        
+    </div>
+
+    </div>
+
+    </div>
+   
+    
+    </div>
+    
+    
+    </div>
+    </section> -->
+
+    
+
+  
+  <!-- Add Bootstrap and ClockPicker CDN links -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+  
+  <!-- Initialize ClockPicker -->
+  <script>
+    $('.clockpicker').clockpicker({
+      autoclose: true,
+      twelvehour: true
+    });
+  </script>
+  
+{%endblock%}

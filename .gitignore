@@ -1,0 +1,16 @@
+sqlite_database
+*.py[cod]
+/src/
+/static/*
+/media/*
+!.gitkeep
+.sass-cache/
+/tmp/
+settings_local.py
+/build/
+/backups/
+/.env
+/.deployment_virtualenv/
+*/__pycache__
+/env
+*db.sqlite3

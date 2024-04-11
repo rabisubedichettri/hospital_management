@@ -1,0 +1,150 @@
+{% extends 'doctor/base.html' %}
+{% block content %}
+<div class="card">
+    <div class="card-header border-transparent">
+    <h3 class="card-title">Upcoming Appointments</h3>
+    <div class="card-tools">
+    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+    <i class="fas fa-minus"></i>
+    </button>
+    <button type="button" class="btn btn-tool" data-card-widget="remove">
+    <i class="fas fa-times"></i>
+    </button>
+    </div>
+    </div>
+    
+    <div class="card-body p-0">
+    <div class="table-responsive">
+    <table class="table m-0">
+    <thead>
+    <tr>
+    <th>Appoint. ID</th>
+    <th>Patient</th>
+    <th>Date</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for appointment in info %}
+            <tr>
+                <td><a href="/doctor/appointment/{{ appointment.appointment_id }}/">{{ appointment.appointment_id }}</a></td>
+                <td>{{ appointment.patient_name}}</td>
+               
+                <td>{{ appointment.appointment_date}}</td>
+                <td>{{ appointment.start_time }}</td>
+                <td>{{ appointment.end_time }}</td>
+            </tr>
+    {% endfor %}
+ 
+    </tbody>
+    </table>
+    </div>
+    
+    </div>
+    
+    
+    </div>
+
+</div>
+<div id='calendar'></div>
+
+<!--  -->
+
+
+    </div>
+
+{%endblock%}
+{%block calender_css%}
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css'>
+<style>
+    /* html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+} */
+
+#calendar {
+  max-width: 1100px;
+  color:Red;
+  margin: 40px auto;
+  width: 1000px; /* Set width to 200 pixels */
+            height: 500px; /* Set height to 150 pixels */
+            /* /* background-color: gray; / * */
+
+}
+
+</style>
+{%endblock%}
+
+{%block calender_js%}
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script><script  src="./script.js"></script>
+<script>
+    $(document).ready(function () {
+
+  var Calendar = FullCalendar.Calendar;
+  var calendarEl = document.getElementById("calendar");
+  
+  var fillcalendar = [];
+
+  var eventData = {{data | safe}};
+  console.log(eventData)
+  
+
+
+
+for (var i = 0; i < eventData.length; i++) {
+  var event = eventData[i];
+
+
+  var date = new Date(event.appointment_date);
+      console.log(date)
+      
+      var year = date.getFullYear();
+      var month = date.getMonth() ; // Month is zero-based
+      var day = date.getDate();
+      fillcalendar.push({
+      title:  event.patient_name,
+      start: new Date(year, month, day),
+      backgroundColor: "#111111",
+      borderColor: "#f56954",
+      allDay: true
+    });
+
+  // Access each object in the array
+  console.log("Appointment ID:", event.appointment_id);
+  console.log("Patient Name:", event.patient_name);
+  console.log("Appointment Date:", event.appointment_date);
+  console.log("Start Time:", event.start_time);
+  console.log("End Time:", event.end_time);
+  console.log("Title:", event.title);
+  console.log("Symptoms:", event.symptoms);
+}
+  
+
+  var calendar = new Calendar(calendarEl, {
+    headerToolbar: {
+      left: "prev,next today",
+      center: "title",
+      right: "dayGridMonth"
+    },
+    //themeSystem: "bootstrap",
+    //custom fill
+    events: fillcalendar,
+    editable: true,
+    droppable: true, // this allows things to be dropped onto the calendar !!!
+    drop: function (info) {
+      // is the "remove after drop" checkbox checked?
+      if (checkbox.checked) {
+        // if so, remove the element from the "Draggable Events" list
+        info.draggedEl.parentNode.removeChild(info.draggedEl);
+      }
+    }
+  });
+
+  calendar.render();
+});
+</script>
+{%endblock%}

@@ -1,0 +1,337 @@
+{% extends 'doctor/base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-2 text-center ">
+
+        <canvas id="canvas" width="150" height="150"
+style="background-color:Tomato">
+</canvas>
+<div>
+    <span id="date"></span>
+</div>
+
+        
+    </div>
+    <div class="col-10">
+        <h2 class="text-center mb-4">Ongoing Appointment 
+            <i class="fa fa-2x fa-sync fa-spin text-success"></i>
+            </h2>
+        
+                <div class="">
+                    {%if patient%}
+                    <span class="btn btn-success ml-4 text-center">start time: {{patient.start_time |time:"h:i A"}} </span> 
+                    <span class="btn btn-danger"> end time: {{patient.end_time| time:"h:i A"}}</span>
+                    {%endif%}
+                    <span class="btn btn-info"> Current time: <span id="digital-clock"></span></span>
+                    {%if patient%}
+                    <span class="btn btn-warning">Remaning Time: <span id="remaining-time"></span</span>
+                    {%endif%}
+                </div>
+                
+    </div>
+    
+</div>
+
+
+{%if patient%}
+<section class="content mt-0">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-3">
+    <div class="card-header">
+
+    </div>
+    
+    <div class="card card-primary card-outline">
+    <div class="card-body box-profile">
+    <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle" src="https://plus.unsplash.com/premium_photo-1667511034915-3fb9af8927ca" alt="User profile picture">
+    </div>
+    <h3 class="profile-username text-center">Nina Mcintire</h3>
+    <p class="text-muted text-center">Dob 3434/34/34</p>
+    <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item">
+    <b>Gender</b> <a class="float-right">Male Female</a>
+    </li>
+    <li class="list-group-item">
+    <b>Following</b> <a class="float-right">543</a>
+    </li>
+    <li class="list-group-item">
+    <b>Friends</b> <a class="float-right">13,287</a>
+    </li>
+    </ul>
+    <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+    </div>
+    
+    </div>
+    
+ 
+    </div>
+    
+    <div class="col-md-9">
+    <div class="card">
+    <div class="card-header p-2">
+    <ul class="nav nav-pills">
+    <li class="nav-item text-info">You are seeing your patient's information here</li>
+   
+    </ul>
+    </div>
+    <div class="card-body">
+    <div class="tab-content">
+    
+    
+    <div class="active tab-pane" id="timeline">
+    
+    <div class="timeline timeline-inverse">
+    
+    
+        <div>
+            <i class="fas fa-user bg-info"></i>
+            <div class="timeline-item">
+            <h3 class="timeline-header border-0"><span class="text-primary">Title:</span> {{patient.title}}
+            </h3>
+            </div>
+            
+            </div>
+    
+    <div>
+          
+    <i class="fas fa-envelope bg-primary"></i>
+    <div class="timeline-item ">
+    <h3 class="timeline-header text-primary">Symptoms</h3>
+    <div class="timeline-body text-dark">
+        {{patient.symptoms}}
+    </div>
+   
+    
+</div>
+
+    
+    
+    </div>
+    
+    <div>
+        <i class="fas fa-user bg-info"></i>
+        <div class="timeline-item ">
+            <h3 class="timeline-header text-primary">prescribe</h3>
+            <div class="timeline-body text-dark">
+                <form method="post">
+                    {%csrf_token%}
+                <div class="form-group">
+                    <textarea class="form-control" name="text" placeholder="write prescribe" rows="3"></textarea>
+                    <input type="hidden" name="id" value="{{patient.appointment_id}}"/>
+                  </div>
+                  <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter1">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+      </svg>
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Are you going to give prescriptions ?</h5>
+          <button type="button" class="close btn btn-danger" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      
+        <div class="modal-footer">
+           
+            
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success">Yes, Finish the appointment</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+            </div>
+            
+        </div>
+    
+    
+    
+
+    </div>
+    </div>
+    
+    </div>
+    
+    </div>
+    </div>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+    </section> 
+
+    {%endif%}
+      <h1 class="mt-4 text-center">  No appointment yet</h1>
+    {%if patient%}
+    {%endif%}
+    
+    {%endblock%}
+
+{%block clock_css%}
+
+{%endblock%}
+
+{%block clock_js%}
+<script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    let radius = canvas.height / 2;
+    ctx.translate(radius, radius);
+    radius = radius * 0.90;
+    
+    setInterval(drawClock, 1000);
+    
+    function drawClock() {
+      ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
+      drawFace(ctx, radius);
+      drawNumbers(ctx, radius);
+      drawTime(ctx, radius);
+      drawDigitalClock(); // Add this line to draw the digital clock
+    }
+    
+    function drawFace(ctx, radius) {
+      const grad = ctx.createRadialGradient(0,0,radius*0.95, 0,0,radius*1.05);
+      grad.addColorStop(0, '#333');
+      grad.addColorStop(0.5, 'white');
+      grad.addColorStop(1, '#333');
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, 2*Math.PI);
+      ctx.fillStyle = 'white';
+      ctx.fill();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = radius*0.1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0, 0, radius*0.1, 0, 2*Math.PI);
+      ctx.fillStyle = '#333';
+      ctx.fill();
+    }
+    
+    function drawNumbers(ctx, radius) {
+      ctx.font = radius*0.15 + "px arial";
+      ctx.textBaseline="middle";
+      ctx.textAlign="center";
+      for(let num = 1; num < 13; num++){
+        let ang = num * Math.PI / 6;
+        ctx.rotate(ang);
+        ctx.translate(0, -radius*0.85);
+        ctx.rotate(-ang);
+        ctx.fillText(num.toString(), 0, 0);
+        ctx.rotate(ang);
+        ctx.translate(0, radius*0.85);
+        ctx.rotate(-ang);
+      }
+    }
+    
+    function drawTime(ctx, radius){
+        const now = new Date();
+        let hour = now.getHours();
+        let minute = now.getMinutes();
+        let second = now.getSeconds();
+        //hour
+        hour=hour%12;
+        hour=(hour*Math.PI/6)+(minute*Math.PI/(6*60))+(second*Math.PI/(360*60));
+        drawHand(ctx, hour, radius*0.5, radius*0.07);
+        //minute
+        minute=(minute*Math.PI/30)+(second*Math.PI/(30*60));
+        drawHand(ctx, minute, radius*0.8, radius*0.07);
+        // second
+        second=(second*Math.PI/30);
+        drawHand(ctx, second, radius*0.9, radius*0.02);
+    }
+    
+    function drawHand(ctx, pos, length, width) {
+        ctx.beginPath();
+        ctx.lineWidth = width;
+        ctx.lineCap = "round";
+        ctx.moveTo(0,0);
+        ctx.rotate(pos);
+        ctx.lineTo(0, -length);
+        ctx.stroke();
+        ctx.rotate(-pos);
+    }
+    
+    function drawDigitalClock() {
+        const now = new Date();
+        let hour = now.getHours();
+        let minute = now.getMinutes();
+        let second = now.getSeconds();
+        hour = hour < 10 ? "0" + hour : hour;
+        minute = minute < 10 ? "0" + minute : minute;
+        second = second < 10 ? "0" + second : second;
+        document.getElementById("digital-clock").textContent = `${hour}:${minute}:${second}`;
+    }
+
+    const currentDate = new Date();
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const formattedDate = currentDate.toLocaleDateString('en-US', options);
+document.getElementById("date").innerHTML = formattedDate;
+{%if patient%}
+    // Value in minutes
+    var valueInMinutes = {{patient.remaining_time}};
+ // Value in minutes
+//  var valueInMinutes = 39677.930414;
+
+// Convert minutes to seconds
+var valueInSeconds = valueInMinutes * 60;
+
+// Define a function to update and display the result
+function updateResult(seconds) {
+  // Convert seconds to hours, minutes, and seconds
+  var hours = Math.floor(seconds / 3600);
+  var minutes = Math.floor((seconds % 3600) / 60);
+  var seconds = seconds % 60;
+
+  // Format the time
+  var time = pad(hours) + ":" + pad(minutes) + ":" + pad(Math.floor(seconds));
+
+  // Display the result
+  document.getElementById("remaining-time").innerText = time;
+}
+
+// Function to pad single-digit numbers with leading zeros
+function pad(num) {
+  return (num < 10 ? "0" : "") + num;
+}
+
+// Reduce time by 1 second every second until it reaches 0
+var timer = setInterval(function() {
+  valueInSeconds -= 1;
+  updateResult(valueInSeconds);
+  
+  if (valueInSeconds <= 0) {
+    clearInterval(timer); // Stop the timer when time reaches 0
+  }
+}, 1000); // Run the function eve
+
+{%endif%}
+
+        // // Get the last refresh time from the Django template
+        // var refreshTime = new Date('{{ refresh_time | safe}}');
+        // console.log(refreshTime)
+        
+        //  // Calculate the time until the next refresh (in milliseconds)
+        //  var currentTime = new Date();
+        // var timeUntilRefresh = refreshTime.getTime() - currentTime.getTime();
+        
+        // // If the time until refresh is negative or zero, reload immediately
+        // if (timeUntilRefresh > 0) {
+        //   setTimeout(function() {
+        //         location.reload();
+        //     }, timeUntilRefresh); 
+        //   location.reload();
+        // } 
+    </script>
+  
+{%endblock%}

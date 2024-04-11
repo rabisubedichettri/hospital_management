@@ -1,0 +1,4 @@
+django==5.0.4
+channels[daphne]
+django-widget-tweaks==1.5.0
+pillow==10.3.0

@@ -1,0 +1,48 @@
+
+<aside id="sidebar">
+    <div class="d-flex">
+        <button class="toggle-btn" type="button">
+            <i class="lni lni-grid-alt"></i>
+        </button>
+        <div class="sidebar-logo">
+            <a href="#">{{request.user.first_name}} {{request.user.last_name}}</a>
+        </div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="sidebar-item">
+            <a href="/patient/available_days" class="sidebar-link">
+                <i class="lni lni-user"></i>
+                <span>Find Doctors</span>
+            </a>
+        </li>
+        
+        <li class="sidebar-item">
+            <a href="#appointment" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#" aria-expanded="false" aria-controls="appointment">
+                <i class="fa fa-calendar"></i>
+                <span>Appointment</span>
+            </a>
+            <ul id="appointment" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/patient/appointment/upcoming" class="sidebar-link"> </i>Upcoming</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/patient/appointment/taken/" class="sidebar-link">Taken</a>
+                </li>
+               
+            </ul>
+        </li>
+
+        
+    
+        
+        
+        
+    </ul>
+    <div class="sidebar-footer">
+        <a href="#" class="sidebar-link">
+            <i class="lni lni-exit"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>

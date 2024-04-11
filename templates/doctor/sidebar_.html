@@ -1,0 +1,68 @@
+
+<aside id="sidebar">
+    <div class="d-flex">
+        <button class="toggle-btn" type="button">
+            <i class="lni lni-grid-alt"></i>
+        </button>
+        <div class="sidebar-logo">
+            <a href="#">{{request.user.first_name}} {{request.user.last_name}}</a>
+        </div>
+    </div>
+    <ul class="sidebar-nav">
+
+        <li class="sidebar-item">
+            <a href="#" class="sidebar-link">
+                <i class="lni lni-user"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        
+        
+        <li class="sidebar-item">
+            <a href="#appointment" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#" aria-expanded="false" aria-controls="appointment">
+                <i class="fa fa-calendar"></i>
+                <span>Appointment</span>
+            </a>
+            <ul id="appointment" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/admin/dashboard/appointment/" class="sidebar-link"> </i>Take</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/admin/dashboard/appointment/available_days/" class="sidebar-link">View</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/admin/dashboard/appointment/create" class="sidebar-link">Bill</a>
+                </li>
+               
+            </ul>
+        </li>
+        <li class="sidebar-item">
+            <a href="#admission" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                data-bs-target="#" aria-expanded="false" aria-controls="appointment">
+                <i class="fa fa-calendar"></i>
+                <span>Admission</span>
+            </a>
+            <ul id="admission" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/admin/dashboard/appointment/" class="sidebar-link"> </i>View</a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/admin/dashboard/appointment/available_days/" class="sidebar-link">Bill</a>
+                </li>
+                <li class="sidebar-item">
+                </li>
+               
+            </ul>
+        </li>
+    
+        
+        
+    </ul>
+    <div class="sidebar-footer">
+        <a href="#" class="sidebar-link">
+            <i class="lni lni-exit"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</aside>

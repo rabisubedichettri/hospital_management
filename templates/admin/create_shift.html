@@ -1,0 +1,198 @@
+{% extends 'admin/base.html' %}
+{% block content %}
+
+
+
+
+    <section class="content-header">
+    <div class="container-fluid">
+    <div class="row mb-2">
+    <div class="col-sm-6">
+    <h1>Add a shift to the doctor's available days</h1>
+    </div>
+    
+    </div>
+    </div>
+    </section>
+    
+    <section class="content">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-3">
+    
+    <div class="card card-primary card-outline">
+    <div class="card-body box-profile">
+    <div class="text-center">
+    <img class="profile-user-img img-fluid img-circle" src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f" alt="User profile picture">
+    </div>
+    <h3 class="profile-username text-center">{{data.doctor.user.first_name}} &nbsp; {{data.doctor.user.last_name}}</h3>
+    <p class="text-muted text-center">{{data.doctor.department}} </p>
+    <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item">
+    <li class="list-group-item">
+    <b>Mobile number</b> <a class="float-right">{{data.doctor.mobile}} </a>
+    </li>
+    <li class="list-group-item">
+    <b>Qualification</b> <a class="float-right">{{data.doctor.education}}</a>
+    </li>
+    </ul>
+    <a href="/admin/dashboard/doctor/detail/{{data.doctor.user.id}}" class="btn btn-success btn-block"><b>Visit Profile</b></a>
+    </div>
+    
+    </div>
+    
+    
+    </div>
+    
+    <div class="col-md-9">
+    <div class="card">
+    <div class="card-header p-2">
+    <ul class="nav nav-pills">
+    </ul>
+    </div>
+    <!--  -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                
+                <div class="info-box mb-3 bg-info">
+                    <span class="info-box-icon"><i class="fa fa-calendar-alt"></i></span>
+                    <div class="info-box-content">
+                    <span class="info-box-text"><h1 class="text-white">Date Booked: {{data.available_day}}</h1></span>
+                    <span class="info-box-number"></span>
+                    </div>
+                    
+                    </div>
+            </div>
+            
+            <div class="col-md-7">
+                <!-- Bordered Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Available Shifts</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10px">s.n.</th>
+                                    <th>Start time</th>
+                                    <th>End time</th>
+                                    <th>Reserved</th>
+                                    <th>Action</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for shift in doctor_available_shifts %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{shift.start_time}}</td>
+                                    <td>
+                                        {{shift.end_time}}
+                                    </td>
+                                    <td>  {% if shift.reversed  %}<i class="fa fa-check"></i>{%endif%}</td>
+                                    <td><!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
+                                          Delete
+                                        </button>
+                                        <form method="post">
+                                            {%csrf_token%}                                        
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                          <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Do you want to remove the shift?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                Note: Make sure that it is reserved or not
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <input type="hidden" name="action" value="remove">
+                                                <input type="hidden" name="available_shift" value="{{shift.id}}">
+                                                <input type="submit" class="btn btn-primary">
+                                              </form>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div></td>
+                                </tr>
+
+                                    {%endfor%}
+                                                            </tbody>
+                        </table>
+                    </div>
+                                    </div>
+            </div>
+    
+            <div class="col-md-5">
+                <!-- Add Shift Form -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Add a new shift</h3>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <!-- Start time field -->
+                            <div class="form-group">
+                                <label for="start_time">Start Time:</label>
+                                <div class="input-group clockpicker">
+                                    <input type="text" class="form-control" id="start_time" name="start_time">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End time field -->
+                            <div class="form-group">
+                                <label for="end_time">End Time:</label>
+                                <div class="input-group clockpicker">
+                                    <input type="text" class="form-control" id="end_time" name="end_time">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!--  -->
+    </div>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+    </section>
+    
+    
+
+  
+  <!-- Add Bootstrap and ClockPicker CDN links -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+  
+  <!-- Initialize ClockPicker -->
+  <script>
+    $('.clockpicker').clockpicker({
+      autoclose: true,
+      twelvehour: true
+    });
+  </script>
+  
+{%endblock%}

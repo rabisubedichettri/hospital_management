@@ -1,0 +1,84 @@
+
+{%extends 'admin/base.html'%}
+{%block content%}
+<section class="content">
+  <div class="container-fluid">
+  
+  <div class="row">
+  <div class="col-lg-3 col-6">
+  
+  <div class="small-box bg-info">
+  <div class="inner">
+  <h3>{{total_doctors}}</h3>
+  <p>Total Doctor</p>
+  </div>
+  <div class="icon">
+  <i class="ion ion-bag"></i>
+  </div>
+  <a href="/admin/dashboard/doctor/view/?approve=&department=&status=" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+  </div>
+  </div>
+  
+  <div class="col-lg-3 col-6">
+  
+  <div class="small-box bg-success">
+  <div class="inner">
+  <h3>{{active_doctors}}</h3>
+  <p>Active Doctor</p>
+  </div>
+  <div class="icon">
+  <i class="ion ion-stats-bars"></i>
+  </div>
+  <a href="/admin/dashboard/doctor/view/?approve=&department=&status=True" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+  </div>
+  </div>
+  
+  <div class="col-lg-3 col-6">
+  
+  <div class="small-box bg-warning">
+  <div class="inner">
+  <h3>{{deactivate_doctors}}</h3>
+  <p>Deactive Doctors</p>
+  </div>
+  <div class="icon">
+  <i class="ion ion-person-add"></i>
+  </div>
+  <a href="/admin/dashboard/doctor/view/?approve=&department=&status=False" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+  </div>
+  </div>
+  <div class="col-lg-3 col-6">
+  
+    <div class="small-box bg-dark">
+    <div class="inner">
+    <h3>{{approve_doctors}}</h3>
+    <p>Approve Doctor</p>
+    </div>
+    <div class="icon">
+    <i class="ion ion-person-add"></i>
+    </div>
+    <a href="/admin/dashboard/doctor/view/?approve=True&department=&status" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+    </div>
+    <div class="col-lg-3 col-6">
+  
+        <div class="small-box bg-warning">
+        <div class="inner">
+        <h3>{{disapprove_doctors}}</h3>
+        <p>Disapprove</p>
+        </div>
+        <div class="icon">
+        <i class="ion ion-person-add"></i>
+        </div>
+        <a href="/admin/dashboard/doctor/view/?approve=False&department=&status=" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        </div>
+    
+  
+  </div>
+  
+  
+
+  
+  </div>
+  </section>
+{%endblock%}

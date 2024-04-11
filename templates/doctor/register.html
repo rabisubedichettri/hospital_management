@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor{% endblock %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <!-- left column -->
+        <!-- general form elements -->
+        <div class="card card-success">
+            <div class="card-header">
+                <h3 class="card-title text-center">Register a new Doctor</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form method="post"  enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name"
+                                {% if user_form.first_name.value %}value="{{ user_form.first_name.value }}" {% endif %}>
+                                {% if user_form.first_name.errors %}
+                                {% for error in user_form.first_name.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name"
+                                {% if user_form.last_name.value %}value="{{ user_form.last_name.value }}" {% endif %}>
+                                {% if user_form.last_name.errors %}
+                                {% for error in user_form.last_name.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" name="username" id="last_name" placeholder="Username"
+                                {% if user_form.username.value %}value="{{ user_form.username.value }}" {% endif %}>
+                                {% if user_form.username.errors %}
+                                {% for error in user_form.username.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="email"
+                                {% if user_form.email.value %}value="{{ user_form.email.value }}" {% endif %}>
+                                {% if user_form.email.errors %}
+                                {% for error in user_form.email.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="mobile">Phone number</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile number"
+                                {% if doctor_form.mobile.value %}value="{{ doctor_form.mobile.value }}" {% endif %}>
+                                {% if doctor_form.mobile.errors %}
+                                {% for error in doctor_form.mobile.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Address "
+                                {% if doctor_form.address.value %}value="{{ doctor_form.address.value }}" {% endif %}>
+                                {% if doctor_form.address.errors %}
+                                {% for error in doctor_form.address.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="experience">Experience</label>
+                                <input type="text" class="form-control" id="experience" name="experience" placeholder="Experience "
+                                {% if doctor_form.experience.value %}value="{{ doctor_form.experience.value }}" {% endif %}>
+                                {% if doctor_form.experience.errors %}
+                                {% for error in doctor_form.experience.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-5">
+
+                        <div class="form-group">
+                        <label>Select Department</label>
+                        <select name="department" aria-invalid="true" id="id_department">
+                            <option value="Cardiologist">Cardiologist</option>
+                          
+                            <option value="Dermatologists">Dermatologists</option>
+                          
+                            <option value="Emergency Medicine Specialists">Emergency Medicine Specialists</option>
+                          
+                            <option value="Allergists/Immunologists">Allergists/Immunologists</option>
+                          
+                            <option value="Anesthesiologists">Anesthesiologists</option>
+                          
+                            <option value="Colon and Rectal Surgeons">Colon and Rectal Surgeons</option>
+                          
+                        </select>
+                        {% if doctor_form.department.errors %}
+                        {% for error in doctor_form.department.errors %}
+                            <small class="form-text text-danger">{{ error }}</small>
+                        {% endfor %}
+                    {% endif %}
+                        </div>
+                        </div>
+               
+                    
+                    <div class="col-md-6">
+                        <div class="card-body">
+                    <div class="form-group">
+                    <label for="exampleInputFile">Photo</label>
+                    <div class="input-group">
+                      <div class="custom-file">
+                       
+                        <input  type="file" name="profile_pic" accept="image/*" class="custom-file-input" id="exampleInputFile">
+                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                      </div>
+                      <div class="input-group-append">
+                        <span class="input-group-text">Upload</span>
+                      </div>
+                      {% if doctor_form.profile_pic.errors %}
+                      {% for error in doctor_form.profile_pic.errors %}
+                          <small class="form-text text-danger">{{ error }}</small>
+                      {% endfor %}
+                  {% endif %}
+                    </div>
+                  </div>
+                  </div>
+                  </div>
+                  <div class="col-md-8 ml-4">
+                  <div class="form-group">
+                    <label>Details</label>
+                    <textarea class="form-control" name="details" rows="3" placeholder="Enter your detail information...">
+                        {% if doctor_form.details.value %}{{ doctor_form.details.value }}{% endif %}
+                    </textarea>
+                    {% if doctor_form.details.errors %}
+                    {% for error in doctor_form.details.errors %}
+                        <small class="form-text text-danger">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+                </div>
+                  </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="password1">Password</label>
+                                <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+                                {% if user_form.password1.errors %}
+                                {% for error in user_form.password1.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="password2">Confirm Password</label>
+                                <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password">
+                                {% if user_form.password2.errors %}
+                                {% for error in user_form.password2.errors %}
+                                    <small class="form-text text-danger">{{ error }}</small>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.card -->
+    </div>
+    <!--/.col (left) -->
+    <!-- right column -->
+    <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+{% endblock %}

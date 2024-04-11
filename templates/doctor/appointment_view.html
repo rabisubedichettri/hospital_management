@@ -1,0 +1,117 @@
+{% extends 'doctor/base.html' %}
+{% block content %}
+<h1 class="text-center mt-2"> <span class="bg-success">Appointment Case: {{ appoinment.id }}</span>
+{%if appointment.finished%}
+<button class="btn btn-danger">Closed</button>
+
+{%else%}
+<button class="btn btn-success">Open</button>
+
+{%endif%}
+</h1>
+<section class="content">
+    <div class="container-fluid">
+    <div class="row">
+    <div class="col-md-3">
+    
+    <div class="card card-primary card-outline">
+    <div class="card-body box-profile">
+
+    <div class="text-center">
+        Patient Info
+        <br>
+    <img class="profile-user-img img-fluid img-circle" src="https://plus.unsplash.com/premium_photo-1661589191027-856a9b0d7b02" alt="User profile picture">
+    </div>
+    <h3 class="profile-username text-center">{{appoinment.patient.user.first_name}} {{appoinment.patient.user.last_name}}</h3>
+    <p class="text-muted text-center">DOB 3453/345/3</p>
+    <ul class="list-group list-group-unbordered mb-3">
+    <li class="list-group-item">
+    <b>Gender</b> <a class="float-right">1,322</a>
+    </li>
+    <li class="list-group-item">
+    <b>Location</b> <a class="float-right">543</a>
+    </li>
+    <li class="list-group-item">
+    <b>Friends</b> <a class="float-right">13,287</a>
+    </li>
+    </ul>
+    <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+    </div>
+    
+    </div>
+    
+    
+    
+    </div>
+    
+    <div class="col-md-9">
+        <div class="card">
+        <div class="card-header p-2">
+        <ul class="nav nav-pills">
+        <li class="nav-item text-info">You are seeing your patient's information here</li>
+       
+        </ul>
+        </div>
+        <div class="card-body">
+        <div class="tab-content">
+        
+        
+        <div class="active tab-pane" id="timeline">
+        
+        <div class="timeline timeline-inverse">
+        
+        
+            <div>
+                <i class="fas fa-user bg-info"></i>
+                <div class="timeline-item">
+                <h3 class="timeline-header border-0"><span class="text-primary">Title:</span> {{appoinment.title}}
+                </h3>
+                </div>
+                
+                </div>
+        
+        <div>
+        
+        <i class="fas fa-envelope bg-primary"></i>
+        <div class="timeline-item ">
+        <h3 class="timeline-header text-primary">Symptoms</h3>
+        <div class="timeline-body text-dark">
+            {{appoinment.symptoms}}
+        </div>
+       
+        
+    </div>
+    
+        
+        
+        </div>
+        {%if prescribe.text%}
+        <div>
+            <i class="fas fa-user bg-info"></i>
+            <div class="timeline-item ">
+                <h3 class="timeline-header text-primary">prescribe</h3>
+                <div class="timeline-body text-dark">
+                    {{prescribe.text}}
+            </div>
+          </div>
+        </div>
+        {%endif%}
+
+    </div>
+                </div>
+                
+            </div>
+        
+        
+        
+    
+        </div>
+        </div>
+        
+        </div>
+    
+    </div>
+    
+    </div>
+    </section>
+{%endblock%}

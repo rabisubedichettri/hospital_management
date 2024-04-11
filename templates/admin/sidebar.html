@@ -1,0 +1,84 @@
+
+    <aside id="sidebar">
+        <div class="d-flex">
+            <button class="toggle-btn" type="button">
+                <i class="lni lni-grid-alt"></i>
+            </button>
+            <div class="sidebar-logo">
+                <a href="#">UserName</a>
+            </div>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#doctor" aria-expanded="false" aria-controls="doctor">
+                    <i class="fa fa-user-md"></i>
+                    <span>Doctor</span>
+                </a>
+                <ul id="doctor" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/doctor/" class="sidebar-link"> </i>Dashboard</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/doctor/view/" class="sidebar-link">View</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/doctor/register/" class="sidebar-link">Add</a>
+                    </li>
+                   
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#patient" aria-expanded="false" aria-controls="patient">
+                    <i class="fa fa-wheelchair"></i>
+                    <span>Patient</span>
+                </a>
+                <ul id="patient" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/patient/" class="sidebar-link"> </i>Dashboard</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/patient/view/" class="sidebar-link">View</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/patient/register/" class="sidebar-link">Add</a>
+                    </li>
+                   
+                </ul>
+            </li>
+            <li class="sidebar-item">
+                <a href="#appointment" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                    data-bs-target="#" aria-expanded="false" aria-controls="appointment">
+                    <i class="fa fa-calendar"></i>
+                    <span>Appointment</span>
+                </a>
+                <ul id="appointment" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/appointment/" class="sidebar-link"> </i>Dashboard</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/appointment/available_days/" class="sidebar-link">Available Dates</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/appointment/create" class="sidebar-link">Create an available day</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/appointment/ongoing/" class="sidebar-link">Ongoing</a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="/admin/dashboard/appointment/taken/" class="sidebar-link">Taken</a>
+                    </li>
+                   
+                </ul>
+            </li>
+       
+            
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-link">
+                <i class="lni lni-exit"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>

@@ -1,0 +1,125 @@
+{% extends 'patient/base.html' %}
+{% block content %}
+<section class="content">
+<h1> Available Dates </h1>
+  <div class="card card-solid">
+  <div class="card-body pb-0 pl-0">
+    {%if doctor_availability%}
+   
+  <div class="row">
+   
+    {% for doctor, availability_days in doctor_availability.items %}
+    {%if availability_days%}
+    <div class="col-6">
+        <div class="row border border-primary">
+  <div class="col-6  align-items-stretch ">
+    
+  <div class="card bg-light d-flex flex-fill">
+  <div class="card-header text-muted border-bottom-0">
+  {{doctor.department}}
+  </div>
+  <div class="card-body pt-0">
+  <div class="row">
+  <div class="col-7">
+  <h2 class="lead"><b>{{doctor.user.first_name}} {{doctor.user.last_name}}</b></h2>
+  <p class="text-muted text-sm"><b>Qualification: </b> {{doctor.education}} </p>
+  <ul class="ml-4 mb-0 fa-ul text-muted">
+  <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: {{doctor.address}}</li><br>
+  <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone #: {{doctor.mobile}}</li>
+  </ul>
+  </div>
+  <div class="col-5 text-center">
+  <img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f" alt="user-avatar" class="img-circle img-fluid">
+  </div>
+  </div>
+  </div>
+  <div class="card-footer">
+  <div class="text-right">
+    <!-- Button trigger modal -->
+
+
+  <a href="/admin/dashboard/doctor/detail/{{doctor.user.id}}/" class="btn text-center btn-sm btn-primary">
+    <i class="fas fa-user"></i>Profile
+    </a>
+  </div>
+  </div>
+  </div>
+  </div>
+  <div class="col-6 pl-0"> 
+    <h5>Available dates</h5>
+    <table class="table table-responsive table-bordered">
+        <thead>
+        <tr>
+        <th>sn</th>
+        <th>Date</th>
+        <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for day in availability_days %}
+
+          <tr>
+        <td>{{forloop.counter}}</td>
+        <td>{{ day.doctor_availability_day.available_day }}</td>
+        <td><a  href="/patient/take/shift/{{day.doctor_availability_day.id}}" class="btn btn-success">Take</a></td>
+        
+               </tr>
+
+        {% endfor %}
+    </tbody>
+        </tbody>
+        </table>
+    
+  </div>
+
+  </div>
+  </div>
+  {%endif%}
+  {%endfor%}
+  
+  {%else%}
+  <h1 class="text-center mt-5 mb-5">Empty Available Days</h1>
+  {%endif%}
+ 
+
+  
+  </div>
+  </div>
+  </div>
+  
+  </div>
+  
+  </section>
+
+        
+    </div>
+
+    </div>
+
+    </div>
+   
+    
+    </div>
+    
+    
+    </div>
+    </section>
+
+    
+
+  
+  <!-- Add Bootstrap and ClockPicker CDN links -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clockpicker/0.0.7/bootstrap-clockpicker.min.js"></script>
+  
+  <!-- Initialize ClockPicker -->
+  <script>
+    $('.clockpicker').clockpicker({
+      autoclose: true,
+      twelvehour: true
+    });
+  </script>
+  
+{%endblock%}
