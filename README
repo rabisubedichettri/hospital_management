@@ -1,0 +1,43 @@
+
+# 1. Cloning the Project
+
+1. Open your command prompt (CMD) or Git Bash.
+2. Navigate to the directory where you want to clone the project.
+3. Run the following command to clone the project repository:
+
+   ```bash
+   git clone https://github.com/rabisubedichettri/hospital_management.git
+
+# 2. Setting up a Virtual Environment
+1.  Navigate into the project directory:
+    
+	    cd <project_directory>
+    
+2.  Install virtualenv if you haven't already:
+	    
+		pip install virtualenv
+    
+3.  Create a virtual environment:
+    
+	    virtualenv venv
+    
+4.  Activate the virtual environment:
+    
+    `	venv\Scripts\activate`
+
+# 3. Migrating the Database
+
+1.  Make sure you're in the project directory and the virtual environment is activated.
+    
+2.  Run the following commands to migrate the database:
+   
+	    python manage.py makemigrations
+    
+	    python manage.py migrate
+	    
+# 3. Running the Server
+
+ After migrating the database, start the development server by running:
+    
+    
+    `python manage.py runserver`
