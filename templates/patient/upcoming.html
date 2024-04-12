@@ -28,7 +28,7 @@
     <tbody>
         {% for appointment in info %}
             <tr>
-                <td><a href="/patient/appointment/{{appoinment.id}}/">{{ appointment.id }}</a></td>
+                <td><a href="/patient/appointment/{{appointment.id}}/">{{ appointment.id }}</a></td>
                 <td>{{ appointment.available_shift.doctor_availability_day.doctor.user.username}}</td>
                
                 <td>{{ appointment.available_shift.doctor_availability_day.available_day }}</td>

@@ -2,8 +2,8 @@
 {% block content %}
 <section class="content">
 <h1> Available Dates </h1>
-  <div class="card card-solid">
-  <div class="card-body pb-0 pl-0">
+  <div class="card ">
+  <div class="card-body ">
     {%if doctor_availability%}
    
   <div class="row">
@@ -11,7 +11,7 @@
     {% for doctor, availability_days in doctor_availability.items %}
     {%if availability_days%}
     <div class="col-6">
-        <div class="row border border-primary">
+        <div class="row border ">
   <div class="col-6  align-items-stretch ">
     
   <div class="card bg-light d-flex flex-fill">
@@ -60,8 +60,8 @@
 
           <tr>
         <td>{{forloop.counter}}</td>
-        <td>{{ day.doctor_availability_day.available_day }}</td>
-        <td><a  href="/patient/take/shift/{{day.doctor_availability_day.id}}" class="btn btn-success">Take</a></td>
+        <td>{{ day.available_day }}</td>
+        <td><a  href="/patient/take/shift/{{day.id}}" class="btn btn-success">Take</a></td>
         
                </tr>
 

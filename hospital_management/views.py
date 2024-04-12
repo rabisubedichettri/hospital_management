@@ -16,6 +16,7 @@ from .forms import CustomPasswordResetForm
 def home(request):
     user_ip = request.META.get('REMOTE_ADDR',"")
     room_name=None
+    chat_data=None
     if not request.user.is_authenticated:
         check_anonymous=AnonymousRoom.objects.filter(ip_address=user_ip)
         if check_anonymous.exists():
@@ -24,7 +25,9 @@ def home(request):
             room_name=AnonymousRoom(ip_address=user_ip)
             room_name.save()
         chat_data=AnonymousRoomMessage.objects.filter(room=room_name)
-    return render(request,'home.html',{'room_name':room_name.room_name,"chat_data":chat_data})
+        room_name=room_name.room_name
+
+    return render(request,'home.html',{'room_name':room_name,"chat_data":chat_data})
 
 
 def about_us(request):
@@ -59,7 +62,7 @@ def role_required(allowed_roles=[]):
                 else:
                     if not request.user.is_superuser:
                         logout(request)
-                        messages.success("logged out and you are redirected to admin login")
+                        messages.success(request,"logged out and you are redirected to admin login")
                         return redirect("/admin/login")
             
             if 'patient' in allowed_roles:
@@ -79,7 +82,7 @@ def role_required(allowed_roles=[]):
                     patient_obj=Patient.objects.filter(user=request.user)
                     if patient_obj.exists() or request.user.is_superuser:
                         logout(request)
-                        messages.success("logged out and you are redirected to patient login")
+                        messages.success(request,"logged out and you are redirected to doctor login")
                         return redirect("/doctor/login")
 
             

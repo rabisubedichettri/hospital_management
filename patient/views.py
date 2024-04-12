@@ -98,11 +98,18 @@ def get_available_days(request):
     for doctor in doctors_with_availability:
         availability_days = DoctorAvailabilityDay.objects.filter(doctor=doctor)
         doctor_shifts = {}
+        temp=[]
         for day in availability_days:
             shifts = DoctorAvailabilityShift.objects.filter(doctor_availability_day=day)
             available_shifts = shifts.filter(start_time__isnull=False, end_time__isnull=False,reserved=False)
-            doctor_shifts[day] = available_shifts
-        doctor_availability[doctor] = available_shifts
+            # doctor_shifts[day] = available_shifts
+            if available_shifts.exists():
+                temp.append(day)
+
+            
+        doctor_availability[doctor] = temp
+    print(doctor_availability)
+      
     return render(request, 'patient/available_days.html', {'doctor_availability': doctor_availability})
 
 
@@ -116,7 +123,7 @@ def find_shift(request,appointment_day):
     return render(request, 'admin/create_shift.html', context)
 
 
-@role_required(allowed_roles=['admin'])
+@role_required(allowed_roles=['patient'])
 def take_shift(request,appointment_day): #unmamnged
     availability_day = get_object_or_404(DoctorAvailabilityDay, id=appointment_day)
     doc_ava_shift=DoctorAvailabilityShift.objects.filter(doctor_availability_day=availability_day,reserved=False)
@@ -143,7 +150,7 @@ def take_shift(request,appointment_day): #unmamnged
             shift_obj.save()
             messages.success(request,"appointment taken")
 
-            return redirect("/")
+            return redirect("/patient/appointment/upcoming/")
         print(form)
 
     else:

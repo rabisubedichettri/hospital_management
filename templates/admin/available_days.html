@@ -60,7 +60,7 @@
           {% for day in availability_days %}
           <tr>
         <td>{{forloop.counter}}</td>
-        <td>{{ day.available_day }}</td>
+        <td>{{day.available_day}}</td>
         <td><a  href="/admin/dashboard/appointment/shfit/{{day.id}}/" class="btn btn-success">Add</a></td>
         {%if not day.reserved %}
         <!--  -->

@@ -78,7 +78,8 @@ def dashboard(request):
     appointments = Appointment.objects.filter(
         available_shift__doctor_availability_day__doctor__user=request.user,
         finished=False,
-        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date(),
+        available_shift__doctor_availability_day__available_day__lt=current_datetime.date()
     )
 
     patient_info = []
@@ -114,7 +115,8 @@ def appointment_upcoming(request):
     appointments = Appointment.objects.filter(
         available_shift__doctor_availability_day__doctor__user=request.user,
         finished=False,
-        available_shift__doctor_availability_day__available_day__gte=current_datetime.date()
+        available_shift__doctor_availability_day__available_day__gte=current_datetime.date(),
+         available_shift__doctor_availability_day__available_day__lt=current_datetime.date()
     )
 
     patient_info = []
@@ -157,7 +159,7 @@ def live_monitor(request):
                 messages.success(request,"Prescription given")
                 appointment.finished=True
                 appointment.save()
-                return redirect("/")
+                return redirect("/doctor/appointment/taken/")
 
 
 
